@@ -25,7 +25,7 @@ twitch_miner = TwitchChannelPointsMiner(
         Priority.STREAK,                        # - We want first of all to catch all watch streak from all streamers
         Priority.ORDER,                         # - When we have all of the drops claimed and no watch-streak available, use the order priority (POINTS_ASCENDING, POINTS_DESCENDING)
     ],
-    enable_analytics=False,                     # Disables Analytics if False. Disabling it significantly reduces memory consumption
+    enable_analytics=True,                     # Disables Analytics if False. Disabling it significantly reduces memory consumption
     disable_ssl_cert_verification=False,        # Set to True at your own risk and only to fix SSL: CERTIFICATE_VERIFY_FAILED error
     disable_at_in_nickname=True,                # Set to True if you want to check for your nickname mentions in the chat even without @ sign
     logger_settings=LoggerSettings(
