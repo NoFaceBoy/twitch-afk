@@ -30,11 +30,11 @@ twitch_miner = TwitchChannelPointsMiner(
     disable_at_in_nickname=True,                # Set to True if you want to check for your nickname mentions in the chat even without @ sign
     logger_settings=LoggerSettings(
         save=False,                              # If you want to save logs in a file (suggested)
-        console_level=logging.WARNING,             # Level of logs - use logging.DEBUG for more info
+        console_level=logging.INFO,             # Level of logs - use logging.DEBUG for more info
         console_username=False,                 # Adds a username to every console log line if True. Also adds it to Telegram, Discord, etc. Useful when you have several accounts
         auto_clear=True,                        # Create a file rotation handler with interval = 1D and backupCount = 7 if True (default)
         time_zone="Europe/Kyiv",                           # Set a specific time zone for console and file loggers. Use tz database names. Example: "America/Denver"
-        file_level=logging.WARNING,               # Level of logs - If you think the log file it's too big, use logging.INFO
+        file_level=logging.INFO,               # Level of logs - If you think the log file it's too big, use logging.INFO
         emoji=True,                             # On Windows, we have a problem printing emoji. Set to false if you have a problem
         less=False,                             # If you think that the logs are too verbose, set this to True
         colored=True,                           # If you want to print colored text
