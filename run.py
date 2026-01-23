@@ -131,9 +131,9 @@ def load_streamers_from_env():
         print(f"Invalid JSON in STREAMERS_LIST: {e}")
         return []
 
-load_streamers_from_env()
+streamers_list = load_streamers_from_env()
 
-twitch_miner.mine(streamers=streamers,  # Array of streamers (order = priority)
+twitch_miner.mine(streamers=streamers_list,  # Array of streamers (order = priority)
     followers=False,                    # Automatic download the list of your followers
     followers_order=FollowersOrder.ASC  # Sort the followers list by follow date. ASC or DESC
 )
