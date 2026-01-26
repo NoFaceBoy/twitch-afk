@@ -49,8 +49,7 @@ twitch_miner = TwitchChannelPointsMiner(
             events=[Events.STREAMER_ONLINE, Events.STREAMER_OFFLINE,
                     Events.JOIN_RAID, Events.CHAT_MENTION, Events.DROP_CLAIM,
                     Events.BONUS_CLAIM, Events.MOMENT_CLAIM, Events.DROP_STATUS,
-                    Events.GAIN_FOR_WATCH_STREAK, Events.GAIN_FOR_WATCH,
-                    Events.GAIN_FOR_CLAIM, Events.GAIN_FOR_RAID,],                          # Only these events will be sent to the chat
+                    Events.GAIN_FOR_WATCH_STREAK, Events.GAIN_FOR_RAID,],                          # Only these events will be sent to the chat
             disable_notification=True,                                              # Revoke the notification (sound/vibration)
         ),
         # discord=Discord(
