@@ -3,7 +3,7 @@ URL = "https://www.twitch.tv"               # Browser, Apps
 # URL = "https://m.twitch.tv"               # Mobile Browser
 # URL = "https://android.tv.twitch.tv"      # TV
 IRC = "irc.chat.twitch.tv"
-IRC_PORT = 6667
+IRC_PORT = 6697  # TLS, the OAuth token must not be sent in plaintext
 WEBSOCKET = "wss://pubsub-edge.twitch.tv/v1"
 HERMES_WEBSOCKET = "wss://hermes.twitch.tv/v1"
 CLIENT_ID = "ue6666qo983tsx6so1t0vnawi233wa"        # TV
@@ -153,12 +153,65 @@ class GQLOperations:
             }
         },
     }
+    # Watch Streak recovery / Weekly Rewards
+    RewardList = {
+        "operationName": "RewardList",
+        "variables": {
+            "shouldIncludeAllSuspendedStreaks": False,
+            # "channelID": "[channel_id]",
+        },
+        "extensions": {
+            "persistedQuery": {
+                "version": 1,
+                "sha256Hash": "0b1471876d7647993731b9e3c6a13bf304c67fb31d07f06a945d42286ee377c4",
+            }
+        },
+    }
+    WeeklyVisitRewardsQuery = {
+        "operationName": "WeeklyVisitRewardsQuery",
+        "extensions": {
+            "persistedQuery": {
+                "version": 1,
+                "sha256Hash": "ce98e9db55db7e4abcc1f5ac65c933b73c58fa9c4c8afe3c5098a8ed79737a3c",
+            }
+        },
+    }
+    FilterableVideoTower_Videos = {
+        "operationName": "FilterableVideoTower_Videos",
+        "variables": {
+            "broadcastType": "ARCHIVE",
+            "includePreviewBlur": False,
+            "limit": 5,
+            "videoSort": "TIME",
+            # "channelOwnerLogin": "[username]",
+        },
+        "extensions": {
+            "persistedQuery": {
+                "version": 1,
+                "sha256Hash": "67004f7881e65c297936f32c75246470629557a393788fb5a69d6d9a25a8fd5f",
+            }
+        },
+    }
+    ClipsCards__User = {
+        "operationName": "ClipsCards__User",
+        "variables": {
+            "criteria": {"filter": "ALL_TIME"},
+            "limit": 10,
+            # "login": "[username]",
+        },
+        "extensions": {
+            "persistedQuery": {
+                "version": 1,
+                "sha256Hash": "1cd671bfa12cec480499c087319f26d21925e9695d1f80225aae6a4354f23088",
+            }
+        },
+    }
     DropCampaignDetails = {
         "operationName": "DropCampaignDetails",
         "extensions": {
             "persistedQuery": {
                 "version": 1,
-                "sha256Hash": "f6396f5ffdde867a8f6f6da18286e4baf02e5b98d14689a69b5af320a4c7b7b8",
+                "sha256Hash": "039277bf98f3130929262cc7c6efd9c141ca3749cb6dca442fc8ead9a53f77c1",
             }
         },
     }
