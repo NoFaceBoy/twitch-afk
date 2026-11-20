@@ -22,6 +22,7 @@ class StreamerSettings(object):
         "claim_drops",
         "claim_moments",
         "watch_streak",
+        "weekly_rewards",
         "community_goals",
         "bet",
         "chat",
@@ -34,6 +35,7 @@ class StreamerSettings(object):
         claim_drops: bool = None,
         claim_moments: bool = None,
         watch_streak: bool = None,
+        weekly_rewards: bool = None,
         community_goals: bool = None,
         bet: BetSettings = None,
         chat: ChatPresence = None,
@@ -43,6 +45,7 @@ class StreamerSettings(object):
         self.claim_drops = claim_drops
         self.claim_moments = claim_moments
         self.watch_streak = watch_streak
+        self.weekly_rewards = weekly_rewards
         self.community_goals = community_goals
         self.bet = bet
         self.chat = chat
@@ -54,6 +57,7 @@ class StreamerSettings(object):
             "claim_drops",
             "claim_moments",
             "watch_streak",
+            "weekly_rewards",
         ]:
             if getattr(self, name) is None:
                 setattr(self, name, True)
@@ -65,7 +69,7 @@ class StreamerSettings(object):
             self.chat = ChatPresence.ONLINE
 
     def __repr__(self):
-        return f"BetSettings(make_predictions={self.make_predictions}, follow_raid={self.follow_raid}, claim_drops={self.claim_drops}, claim_moments={self.claim_moments}, watch_streak={self.watch_streak}, community_goals={self.community_goals}, bet={self.bet}, chat={self.chat})"
+        return f"BetSettings(make_predictions={self.make_predictions}, follow_raid={self.follow_raid}, claim_drops={self.claim_drops}, claim_moments={self.claim_moments}, watch_streak={self.watch_streak}, weekly_rewards={self.weekly_rewards}, community_goals={self.community_goals}, bet={self.bet}, chat={self.chat})"
 
 
 class Streamer(object):
@@ -88,6 +92,9 @@ class Streamer(object):
         "history",
         "streamer_url",
         "mutex",
+        "watch_streak_missed_streams",
+        "weekly_rewards",
+        "streak_store",
     ]
 
     def __init__(self, username, settings=None):
@@ -114,6 +121,13 @@ class Streamer(object):
 
         self.mutex = Lock()
 
+        # Broadcast ids of the streams missed by the current Watch Streak
+        self.watch_streak_missed_streams = set()
+        # Weekly Rewards state (weeklyVisitRewards), None if there's no active event
+        self.weekly_rewards = None
+        # Persistent Watch Streak state (StreakStore), shared by all the streamers
+        self.streak_store = None
+
     def __repr__(self):
         return f"Streamer(username={self.username}, channel_id={self.channel_id}, channel_points={_millify(self.channel_points)})"
 
@@ -128,6 +142,12 @@ class Streamer(object):
         if self.is_online is True:
             self.offline_at = time.time()
             self.is_online = False
+            if self.streak_store is not None:
+                self.streak_store.stream_ended(
+                    self.username, self.stream.broadcast_id, ended_at=self.offline_at
+                )
+            # Make sure the next broadcast's id is fetched before it's used
+            self.stream.invalidate()
 
         self.toggle_chat()
 
@@ -143,7 +163,7 @@ class Streamer(object):
         if self.is_online is False:
             self.online_at = time.time()
             self.is_online = True
-            self.stream.init_watch_streak()
+            self.new_broadcast()
 
         self.toggle_chat()
 
@@ -172,6 +192,32 @@ class Streamer(object):
 
         if reason_code == "WATCH_STREAK":
             self.stream.watch_streak_missing = False
+            if self.streak_store is not None:
+                self.streak_store.streak_claimed(self.username, self.stream.broadcast_id)
+
+    def new_broadcast(self):
+        """Resets the Watch Streak state for a new broadcast, or restores it if the miner
+        was restarted during a broadcast it had already watched."""
+        self.stream.init_watch_streak()
+        if self.streak_store is None:
+            return
+        state = self.streak_store.stream_started(
+            self.username, self.stream.broadcast_id, started_at=self.online_at
+        )
+        if state is not None:
+            self.stream.watch_streak_missing = not state.get("claimed", False)
+            self.stream.minute_watched = state.get("minutes_watched") or 0
+            logger.debug(
+                f"Restored the watch streak state of {self.username}: "
+                f"claimed={state.get('claimed')}, minutes watched={self.stream.minute_watched}"
+            )
+
+    def update_minute_watched(self):
+        self.stream.update_minute_watched()
+        if self.streak_store is not None:
+            self.streak_store.minutes_watched(
+                self.username, self.stream.broadcast_id, self.stream.minute_watched
+            )
 
     def stream_up_elapsed(self):
         return self.stream_up == 0 or ((time.time() - self.stream_up) > 120)
@@ -297,4 +343,4 @@ class Streamer(object):
         self.community_goals[community_goal.goal_id] = community_goal
 
     def delete_community_goal(self, goal_id):
-        self.community_goals.pop(goal_id)
+        self.community_goals.pop(goal_id, None)

@@ -1,4 +1,4 @@
-FROM python:3.10-bullseye
+FROM python:3.12-bookworm
 
 ARG BUILDX_QEMU_ENV
 
@@ -12,6 +12,7 @@ ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 RUN pip install --upgrade pip
 
 RUN apt-get update
+RUN apt-get upgrade -y
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --fix-missing --no-install-recommends \
     gcc \
     libffi-dev \

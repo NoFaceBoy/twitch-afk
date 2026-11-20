@@ -91,6 +91,10 @@ class Stream(object):
     def update_required(self):
         return self.__last_update == 0 or self.update_elapsed() >= 120
 
+    def invalidate(self):
+        """Forces the next update_stream() to fetch the stream info again."""
+        self.__last_update = 0
+
     def update_elapsed(self):
         return 0 if self.__last_update == 0 else (time.time() - self.__last_update)
 
