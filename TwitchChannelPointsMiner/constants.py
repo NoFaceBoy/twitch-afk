@@ -3,10 +3,11 @@ URL = "https://www.twitch.tv"               # Browser, Apps
 # URL = "https://m.twitch.tv"               # Mobile Browser
 # URL = "https://android.tv.twitch.tv"      # TV
 IRC = "irc.chat.twitch.tv"
-IRC_PORT = 6667
+IRC_PORT = 6697  # TLS, the OAuth token must not be sent in plaintext
 WEBSOCKET = "wss://pubsub-edge.twitch.tv/v1"
+HERMES_WEBSOCKET = "wss://hermes.twitch.tv/v1"
 CLIENT_ID = "ue6666qo983tsx6so1t0vnawi233wa"        # TV
-# CLIENT_ID = "kimne78kx3ncx6brgo4mv6wki5h1ko"      # Browser
+CLIENT_ID_WEB = "kimne78kx3ncx6brgo4mv6wki5h1ko"    # Browser
 # CLIENT_ID = "r8s4dac0uhzifbpu9sjdiwzctle17ff"     # Mobile Browser
 # CLIENT_ID = "kd1unb4b3q4t58fwlpcbzcbnm76a8fp"     # Android App
 # CLIENT_ID = "851cqzxpb9bqu9z6galo155du"           # iOS App
@@ -54,7 +55,7 @@ class GQLOperations:
         "extensions": {
             "persistedQuery": {
                 "version": 1,
-                "sha256Hash": "3093517e37e4f4cb48906155bcd894150aef92617939236d2508f3375ab732ce",
+                "sha256Hash": "ed230aa1e33e07eebb8928504583da78a5173989fadfb1ac94be06a04f3cdbe9",
             }
         },
     }
@@ -63,7 +64,7 @@ class GQLOperations:
         "extensions": {
             "persistedQuery": {
                 "version": 1,
-                "sha256Hash": "a5f2e34d626a9f4f5c0204f910bab2194948a9502089be558bb6e779a9e1b3d2",
+                "sha256Hash": "198492e0857f6aedead9665c81c5a06d67b25b58034649687124083ff288597d",
             }
         },
     }
@@ -99,7 +100,7 @@ class GQLOperations:
         "extensions": {
             "persistedQuery": {
                 "version": 1,
-                "sha256Hash": "1530a003a7d374b0380b79db0be0534f30ff46e61cffa2bc0e2468a909fbc024",
+                "sha256Hash": "7fe050e3761eb2cf258d70ee1a21cbd76fa8cf3d7e7b12fc437e7029d446b5e3",
             }
         },
     }
@@ -152,12 +153,65 @@ class GQLOperations:
             }
         },
     }
+    # Watch Streak recovery / Weekly Rewards
+    RewardList = {
+        "operationName": "RewardList",
+        "variables": {
+            "shouldIncludeAllSuspendedStreaks": False,
+            # "channelID": "[channel_id]",
+        },
+        "extensions": {
+            "persistedQuery": {
+                "version": 1,
+                "sha256Hash": "0b1471876d7647993731b9e3c6a13bf304c67fb31d07f06a945d42286ee377c4",
+            }
+        },
+    }
+    WeeklyVisitRewardsQuery = {
+        "operationName": "WeeklyVisitRewardsQuery",
+        "extensions": {
+            "persistedQuery": {
+                "version": 1,
+                "sha256Hash": "ce98e9db55db7e4abcc1f5ac65c933b73c58fa9c4c8afe3c5098a8ed79737a3c",
+            }
+        },
+    }
+    FilterableVideoTower_Videos = {
+        "operationName": "FilterableVideoTower_Videos",
+        "variables": {
+            "broadcastType": "ARCHIVE",
+            "includePreviewBlur": False,
+            "limit": 5,
+            "videoSort": "TIME",
+            # "channelOwnerLogin": "[username]",
+        },
+        "extensions": {
+            "persistedQuery": {
+                "version": 1,
+                "sha256Hash": "67004f7881e65c297936f32c75246470629557a393788fb5a69d6d9a25a8fd5f",
+            }
+        },
+    }
+    ClipsCards__User = {
+        "operationName": "ClipsCards__User",
+        "variables": {
+            "criteria": {"filter": "ALL_TIME"},
+            "limit": 10,
+            # "login": "[username]",
+        },
+        "extensions": {
+            "persistedQuery": {
+                "version": 1,
+                "sha256Hash": "1cd671bfa12cec480499c087319f26d21925e9695d1f80225aae6a4354f23088",
+            }
+        },
+    }
     DropCampaignDetails = {
         "operationName": "DropCampaignDetails",
         "extensions": {
             "persistedQuery": {
                 "version": 1,
-                "sha256Hash": "f6396f5ffdde867a8f6f6da18286e4baf02e5b98d14689a69b5af320a4c7b7b8",
+                "sha256Hash": "039277bf98f3130929262cc7c6efd9c141ca3749cb6dca442fc8ead9a53f77c1",
             }
         },
     }
